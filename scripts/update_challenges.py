@@ -47,6 +47,8 @@ def get_language(filename: str) -> Optional[str]:
         return "cuda"
     if filename == "starter.mojo":
         return "mojo"
+    if filename == "starter.mlx.py":
+        return "mlx"
     if filename.startswith("starter.") and filename.endswith(".py"):
         parts = filename.split(".")
         if len(parts) == 3:
@@ -62,6 +64,7 @@ STARTER_FILENAME_MAP = {
     "starter.triton.py": "starter.py",
     "starter.jax.py": "starter.py",
     "starter.cute.py": "starter.py",
+    "starter.mlx.py": "starter.py",
 }
 
 

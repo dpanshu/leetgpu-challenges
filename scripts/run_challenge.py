@@ -30,12 +30,17 @@ def find_solution_file(challenge_dir: Path, language: str) -> tuple[str, str]:
     language_to_extension = {
         "cuda": "cu",
         "mojo": "mojo",
-        "pytorch": "py",
-        "cute": "py",
-        "triton": "py",
-        "jax": "py",
+        "pytorch": "pytorch.py",
+        "cute": "cute.py",
+        "triton": "triton.py",
+        "jax": "jax.py",
+        "mlx": "mlx.py",
     }
-    solution_file = challenge_dir / "solution" / f"solution.{language_to_extension[language]}"
+    solution_dir = challenge_dir / "solution"
+    solution_file = solution_dir / f"solution.{language_to_extension[language]}"
+    legacy_file = solution_dir / "solution.py"
+    if not solution_file.exists() and language in {"pytorch", "cute", "triton", "jax"} and legacy_file.exists():
+        solution_file = legacy_file
     if not solution_file.exists():
         raise FileNotFoundError(
             f"No solution file found for {language}. "
@@ -94,7 +99,12 @@ def main() -> int:
 
     parser = argparse.ArgumentParser(description="Submit a solution via WebSocket API.")
     parser.add_argument("challenge_path", type=Path, help="Path to the challenge directory")
-    parser.add_argument("--language", default="cuda", help="Language (default: cuda)")
+    parser.add_argument(
+        "--language",
+        default="cuda",
+        choices=["cuda", "mojo", "pytorch", "cute", "triton", "jax", "mlx"],
+        help="Language (default: cuda)",
+    )
     parser.add_argument(
         "--gpu", default="NVIDIA TESLA T4", help="GPU name (default: NVIDIA TESLA T4)"
     )
